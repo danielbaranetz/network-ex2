@@ -71,7 +71,6 @@ def safe_eval_expr(expr: str) -> float:
     tree = ast.parse(expr, mode="eval")
     return float(_eval_node(tree.body))
 
-# ---------------- GPT Call (stub by default) ----------------
 # ---------------- GPT Call (Real Implementation) ----------------
 def call_gpt(prompt: str) -> str:
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -79,6 +78,7 @@ def call_gpt(prompt: str) -> str:
         response = client.chat.completions.create(
             model="gpt-4.1-nano",
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=150
 
         )
         return response.choices[0].message.content.strip()
