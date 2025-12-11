@@ -1,58 +1,73 @@
-\# EX2 — Application Layer Lab (Python 3.13+)
+# 🚀 TCP Client-Server-Proxy Application
 
+An Application-Layer networking project implementing a custom JSON-based protocol over TCP.
+The system features a **Smart Caching Proxy**, **Persistent Connections**, and **GPT integration**.
 
+---
 
-This exercise teaches the basics of TCP sockets in Python and a simple app-layer protocol over TCP using \*\*line-delimited JSON\*\*.
+## 🌟 Key Features
 
+### 1. Robust Server (`server.py`)
+* **Safe Calculator:** Evaluates mathematical expressions using a secure AST parser (no `eval()`).
+* **GPT Integration:** Supports both a "Stub" mode and real OpenAI API calls via `.env`.
+* **LRU Cache:** Internal caching mechanism to store recent results.
+* **Persistent Connections:** Handles multiple requests over a single TCP connection.
 
+### 2. Smart Proxy (`proxy.py`)
+* **Application-Layer Parsing:** Fully parses JSON requests instead of just piping bytes.
+* **Local Caching:** Checks its own LRU cache before forwarding requests to the server.
+* **Traffic Reduction:** Reduces load on the main server by serving cached responses immediately (`proxy_cache: true`).
+* **Resilience:** Can serve cached answers even if the main server is down.
 
-\## Components
+### 3. Interactive Client (`client.py`)
+* **Menu-Driven UI:** Easy-to-use interface for Math and GPT modes.
+* **Persistent Session:** Opens one socket and keeps it alive for multiple requests.
+* **Flexible:** Can connect directly to the Server or via the Proxy.
 
-\- `server.py`: TCP server that accepts one-line JSON requests and returns one-line JSON responses.
+---
 
-&nbsp; - `mode="calc"`: evaluate a math expression safely (no `eval`).
+## 🛠️ Installation & Setup
 
-&nbsp; - `mode="gpt"`: send a prompt to GPT (stub by default; can be replaced with a real API call).
+1.  **Install Dependencies** (Required for GPT & Environment variables):
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-&nbsp; - Built-in LRU cache for responses.
+2.  **Configure API Key:**
+    * The API key already configured
+---
 
-\- `client.py`: simple client for sending requests to the server.
+## 🏃‍♂️ How to Run
 
-\- `proxy.py` (optional challenge): transparent TCP proxy you can extend (e.g., logging or local cache).
+You will need **3 separate terminal windows** to see the full system in action.
 
-\- `tests/test\_smoke.py`: tiny smoke test.
-
-\- `requirements.txt`: dependencies (only needed if you choose to enable real GPT calls).
-
-
-
-\## Quick Start
-
+### Step 1: Start the Real Server
+Listens on port `5555` by default.
 ```bash
+python server.py
+```
+### Step 2: Start the Proxy server
+Listens on port `5554` and forwarding to port `5555` by default.
+```bash
+python proxy.py
+```
+### Step 3: Start the Client.
+Connect directly to server by default using port `5555`
+Use --port `5554` to Connect to the Proxy server.
+```bash
+python client.py --port 5554
+```
 
-pip install -r requirements.txt   # optional unless you enable GPT real calls
+## 📂 Project Structure
 
-python server.py --host 127.0.0.1 --port 5555
+* `server.py` - Main TCP server logic (Math evaluation & GPT integration).
+* `client.py` - interactive client with menu and persistent connection support.
+* `proxy.py` - Smart Application-Layer proxy with LRU Caching.
+* `requirements.txt` - Python dependencies (OpenAI, Dotenv).
+* `.env` - Configuration file for API Keys.
 
+---
 
-
-\# Calculate:
-
-python client.py --host 127.0.0.1 --port 5555 --mode calc --expr "sin(max(2,3\*4,5)/7)\*3"
-
-
-
-\# GPT (stub by default):
-
-python client.py --host 127.0.0.1 --port 5555 --mode gpt --prompt "Summarize Newton in 3 bullet points"
-
-
-
-\## Quick Start with Proxy
-
-python proxy.py --listen-port 5554 --server-port 5555
-
-python client.py --host 127.0.0.1 --port 5554 --mode calc --expr "sqrt(16)"
-
-
-
+## 👨‍💻 Authors
+#### Daniel Baranetz, Shaked Horesh
+Submitted as part of Computer Networks Course (2025).
